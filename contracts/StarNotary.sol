@@ -57,6 +57,9 @@ contract StarNotary is ERC721 {
         }
     }
 
+    //This function is added here to override the one comig from ERC721 implementation, 
+    //as in its curent version it check if the owner of the start is the msg.sender, and a start cannot be 
+    //bougth by a user that is not the owner of the sart.
     function transferFrom(
         address from,
         address to,
@@ -79,7 +82,6 @@ contract StarNotary is ERC721 {
         //4. Use _transferFrom function to exchange the tokens.
         address ownerAddressOfToken1 = ownerOf(_tokenId1);
         address ownerAddressOfToken2 = ownerOf(_tokenId2);
-        //TODO DA: the below is actually checked by transferFrom so can be removed
         require(ownerAddressOfToken1 == msg.sender, "The owner of the first star should be the message sender.");
         transferFrom(ownerAddressOfToken1, ownerAddressOfToken2, _tokenId1);
         transferFrom(ownerAddressOfToken2, ownerAddressOfToken1, _tokenId2);
@@ -90,7 +92,6 @@ contract StarNotary is ERC721 {
         //1. Check if the sender is the ownerOf(_tokenId)
         //2. Use the transferFrom(from, to, tokenId); function to transfer the Star
         address ownerAddressOfToken = ownerOf(_tokenId);
-        //TODO DA: the below is actually checked by transferFrom so can be removed
         require(ownerAddressOfToken == msg.sender, "The owner of the star should be the message sender.");
         require(_to1 != address(0x0), "The adress the start is sent to should not be empty.");
         transferFrom(ownerAddressOfToken, _to1, _tokenId);
