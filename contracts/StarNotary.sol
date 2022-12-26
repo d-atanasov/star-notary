@@ -1,7 +1,8 @@
-pragma solidity >=0.4.24;
+//SPDX-License-Identifier: UNLICENSED
+pragma solidity >=0.8.17;
 
 //Importing openzeppelin-solidity ERC-721 implemented Standard
-import "../app/node_modules/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
+import "../app/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 // StarNotary Contract declaration inheritance the ERC721 openzeppelin implementation
 contract StarNotary is ERC721 {
@@ -14,12 +15,8 @@ contract StarNotary is ERC721 {
     // Implement Task 1 Add a name and symbol properties
     // name: Is a short name to your token
     // symbol: Is a short string like 'USD' -> 'American Dollar'
-    string public name;
-    string public symbol;
 
-    constructor(string memory _name, string memory _symbol) ERC721() public {
-        name = _name;
-        symbol = _symbol;
+    constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {
     }
 
     // mapping the Star with the Owner Address
@@ -44,7 +41,7 @@ contract StarNotary is ERC721 {
 
     // Function that allows you to convert an address into a payable address
     function _make_payable(address x) internal pure returns (address payable) {
-        return address(uint160(x));
+        return payable(address(uint160(x)));
     }
 
     function buyStar(uint256 _tokenId) public  payable {
@@ -52,17 +49,26 @@ contract StarNotary is ERC721 {
         uint256 starCost = starsForSale[_tokenId];
         address ownerAddress = ownerOf(_tokenId);
         require(msg.value > starCost, "You need to have enough Ether");
-        _transferFrom(ownerAddress, msg.sender, _tokenId); // We can't use _addTokenTo or_removeTokenFrom functions, now we have to use _transferFrom
+        transferFrom(ownerAddress, msg.sender, _tokenId); // We can't use _addTokenTo or_removeTokenFrom functions, now we have to use _transferFrom
         address payable ownerAddressPayable = _make_payable(ownerAddress); // We need to make this conversion to be able to use transfer() function to transfer ethers
         ownerAddressPayable.transfer(starCost);
         if(msg.value > starCost) {
-            msg.sender.transfer(msg.value - starCost);
+            payable(msg.sender).transfer(msg.value - starCost);
         }
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public virtual override {
+        _transfer(from, to, tokenId);
     }
 
     // Implement Task 1 lookUptokenIdToStarInfo
     function lookUptokenIdToStarInfo (uint _tokenId) public view returns (string memory) {
         //1. You should return the Star saved in tokenIdToStarInfo mapping
+        return tokenIdToStarInfo[_tokenId].name;
     }
 
     // Implement Task 1 Exchange Stars function
@@ -71,12 +77,23 @@ contract StarNotary is ERC721 {
         //2. You don't have to check for the price of the token (star)
         //3. Get the owner of the two tokens (ownerOf(_tokenId1), ownerOf(_tokenId2)
         //4. Use _transferFrom function to exchange the tokens.
+        address ownerAddressOfToken1 = ownerOf(_tokenId1);
+        address ownerAddressOfToken2 = ownerOf(_tokenId2);
+        //TODO DA: the below is actually checked by transferFrom so can be removed
+        require(ownerAddressOfToken1 == msg.sender, "The owner of the first star should be the message sender.");
+        transferFrom(ownerAddressOfToken1, ownerAddressOfToken2, _tokenId1);
+        transferFrom(ownerAddressOfToken2, ownerAddressOfToken1, _tokenId2);
     }
 
     // Implement Task 1 Transfer Stars
     function transferStar(address _to1, uint256 _tokenId) public {
         //1. Check if the sender is the ownerOf(_tokenId)
         //2. Use the transferFrom(from, to, tokenId); function to transfer the Star
+        address ownerAddressOfToken = ownerOf(_tokenId);
+        //TODO DA: the below is actually checked by transferFrom so can be removed
+        require(ownerAddressOfToken == msg.sender, "The owner of the star should be the message sender.");
+        require(_to1 != address(0x0), "The adress the start is sent to should not be empty.");
+        transferFrom(ownerAddressOfToken, _to1, _tokenId);
     }
 
 }
