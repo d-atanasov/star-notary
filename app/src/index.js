@@ -15,7 +15,7 @@ const App = {
       const deployedNetwork = starNotaryArtifact.networks[networkId];
       this.meta = new web3.eth.Contract(
         starNotaryArtifact.abi,
-        '0xE476b59ec3e239B8851230147996aaA93865C443'
+        deployedNetwork.address
       );
 
       // get accounts
