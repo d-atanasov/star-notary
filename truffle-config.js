@@ -23,7 +23,7 @@
  */
 
 const HDWalletProvider = require('./app/node_modules/@truffle/hdwallet-provider');
-const infuraKey = '';
+const infuraKey = '<add key>';
 //
 const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
@@ -64,13 +64,14 @@ module.exports = {
 
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
-     gorli: {
+     goerli: {
+      networkCheckTimeout: 1000000,
       provider: () => new HDWalletProvider(mnemonic, 'https://goerli.infura.io/v3/' + infuraKey),
       network_id: 5,       
       //gas: 4465030,       
       //confirmations: 2,    // # of confs to wait between deployments. (default: 0)
-      //timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-      //skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
      },
 
     // Useful for private networks

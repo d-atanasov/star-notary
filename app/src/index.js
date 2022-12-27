@@ -15,7 +15,7 @@ const App = {
       const deployedNetwork = starNotaryArtifact.networks[networkId];
       this.meta = new web3.eth.Contract(
         starNotaryArtifact.abi,
-        deployedNetwork.address,
+        '0x6682bE1C8b251D9a67f57040274671BED8c46Bc1'
       );
 
       // get accounts
@@ -40,7 +40,7 @@ const App = {
     const { createStar } = this.meta.methods;
     const name = document.getElementById("starName").value;
     const id = document.getElementById("starId").value;
-    await createStar(name, id).send({from: this.account});
+    await createStar(name, id).send({from: this.account, value: 0, gas: 10000, gasPrice: 1990000000,});
     App.setStatus("New Star Owner is " + this.account + ".");
   },
 
