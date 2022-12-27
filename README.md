@@ -6,7 +6,7 @@
   Truffle: v5.7.1
   OpenZeppelin: 4.8.0
 4) Your Token Address on the Rinkeby Network<br/>
-  The address is in Goerli network as Rinkeby is deptreacred: 0x6682bE1C8b251D9a67f57040274671BED8c46Bc1
+  The address is in Goerli network as Rinkeby is deptreacred: 0xE476b59ec3e239B8851230147996aaA93865C443
 
 # ND1309 C2 Ethereum Smart Contracts, Tokens and Dapps - Project Starter 
 **PROJECT: Decentralized Star Notary Service Project** - For this project, you will create a DApp by adding functionality with your smart contract and deploy it on the public testnet.
